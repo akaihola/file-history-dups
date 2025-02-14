@@ -18,7 +18,7 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-file-history-dups = "src.file_history_dups.__main__:main"
+file-history-dups = "file_history_dups.__main__:main"
 
 [project.license]
 text = "MIT"
