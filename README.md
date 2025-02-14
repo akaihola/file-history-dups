@@ -40,3 +40,8 @@ Process completed. Total deleted: 2, Total skipped: 0
 - Always test with `--dry-run` first
 - Double-check your backups before running
 - Files are permanently deleted (not moved to trash)
+
+## More information
+
+- [Structure of File History backups](https://superuser.com/a/1522178/11302)
+- [File History keeps saving copies of files that haven't changed](https://superuser.com/q/997329/11302)
