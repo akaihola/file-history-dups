@@ -6,9 +6,10 @@ build-backend = "flit_core.buildapi"
 name = "file-history-dups"
 version = "0.1.0"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "Antti Kaihola", email = "13725+akaihola@users.noreply.github.com"},
 ]
-description = "Remove duplicate files with timestamp in filenames"
+description = "Remove duplicate files in Windows File History backups"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.6"
 classifiers = [
     "License :: OSI Approved :: MIT License",
