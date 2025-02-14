@@ -53,4 +53,25 @@ class TestDuplicateRemover(unittest.TestCase):
         checksum2, _ = compute_checksum(file2)
         self.assertNotEqual(checksum1, checksum2)
 
+    def test_grouping_by_size(self):
+        """Test that files with same base/ext but different sizes are in separate groups"""
+        test_files = [
+            'file (2023_01_01 00_00_00 UTC).txt',  # Size 5
+            'file (2023_01_02 00_00_00 UTC).txt',  # Size 10
+        ]
+        
+        # Create files with different sizes
+        for i, filename in enumerate(test_files):
+            path = os.path.join(self.test_dir, filename)
+            with open(path, 'w') as f:
+                f.write('x' * (5 + i*5))  # 5 and 10 characters respectively
+        
+        # Mock process_directory call
+        from file_history_dups.__main__ import process_directory
+        deleted, skipped = process_directory(self.test_dir, test_files)
+        
+        # Should process 2 groups (one for each size) but delete nothing since groups are size 1
+        self.assertEqual(deleted, 0)
+        self.assertEqual(skipped, 0)
+
     # More tests for process_directory and main

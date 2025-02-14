@@ -55,7 +55,7 @@ def process_directory(dirpath, filenames, dry_run=False):
     total_deleted = 0
     total_skipped = 0
 
-    for (base, ext), group in groups.items():
+    for (base, ext, _), group in groups.items():
         if len(group) < 2:
             continue
 
@@ -73,28 +73,31 @@ def process_directory(dirpath, filenames, dry_run=False):
             total_skipped += len(group) - 1
             continue
 
-        if len(set(checksums)) != 1:
-            print(
-                f"Skipping group '{base}.{ext}' in {dirpath}: files have different content"
-            )
-            total_skipped += len(group) - 1
-            continue
+        # Group files by their checksum
+        checksum_groups = defaultdict(list)
+        for file_info, checksum in zip(group, checksums):
+            checksum_groups[checksum].append(file_info)
 
-        sorted_group = sorted(group, key=lambda x: x["timestamp"], reverse=True)
-        to_delete = sorted_group[1:]
-
-        for file_info in to_delete:
-            if dry_run:
-                print(f"Dry run: Would delete {file_info['path']}")
-                total_deleted += 1
-            else:
-                try:
-                    os.remove(file_info["path"])
-                    print(f"Deleted {file_info['path']}")
+        # Process each checksum subgroup
+        for subgroup in checksum_groups.values():
+            if len(subgroup) < 2:
+                continue
+                
+            sorted_subgroup = sorted(subgroup, key=lambda x: x["timestamp"], reverse=True)
+            to_delete = sorted_subgroup[1:]
+            
+            for file_info in to_delete:
+                if dry_run:
+                    print(f"Dry run: Would delete {file_info['path']}")
                     total_deleted += 1
-                except OSError as e:
-                    print(f"Error deleting {file_info['path']}: {e}")
-                    total_skipped += 1
+                else:
+                    try:
+                        os.remove(file_info["path"])
+                        print(f"Deleted {file_info['path']}")
+                        total_deleted += 1
+                    except OSError as e:
+                        print(f"Error deleting {file_info['path']}: {e}")
+                        total_skipped += 1
 
     return total_deleted, total_skipped
 
